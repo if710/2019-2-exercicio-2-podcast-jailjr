@@ -6,6 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.itemlista.view.*
+import android.content.Intent
+import android.widget.Toast
 
 class FeedAdapter(private val itemFeedList: List<ItemFeed>, private val c: Context ):RecyclerView.Adapter<FeedAdapter.ViewHolder>()
 {
@@ -14,6 +16,11 @@ class FeedAdapter(private val itemFeedList: List<ItemFeed>, private val c: Conte
         val date = item.item_date
         val button = item.item_action
 
+        init{
+            button.setOnClickListener{
+                Toast.makeText(itemView.context,"Downloading...",Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     override fun getItemCount(): Int {
@@ -30,6 +37,14 @@ class FeedAdapter(private val itemFeedList: List<ItemFeed>, private val c: Conte
         holder.title.text = itemFeed.title
         holder.date.text = itemFeed.pubDate
 
+        holder.title.setOnClickListener{
+            val intent = Intent(c, EpisodeDetailActivity::class.java)
+            intent.putExtra("Title", itemFeed.title)
+            intent.putExtra("Description", itemFeed.description)
+            intent.putExtra("Imagem", itemFeed.imageUrl)
+            intent.putExtra("Link", itemFeed.link)
+            c.startActivity(intent)
+        }
     }
 
 }

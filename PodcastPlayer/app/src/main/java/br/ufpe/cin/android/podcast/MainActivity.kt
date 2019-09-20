@@ -16,19 +16,20 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
+        recycleView.layoutManager = LinearLayoutManager(this@MainActivity)
+        recycleView.adapter = FeedAdapter(listOf<ItemFeed>(), this@MainActivity)
+        var itemFeedList = listOf<ItemFeed>()
         doAsync {
             try{
                 //pegando o feed da url e jogando no parser
                 var feed = URL("https://s3-us-west-1.amazonaws.com/podcasts.thepolyglotdeveloper.com/podcast.xml").readText()
-                var itemFeedList = Parser.parse(feed)
+                itemFeedList = Parser.parse(feed)
 
                 //db
                 val db = ItemFeedDB.getDatabase(applicationContext).ItemFeedDAO().inserirFeed(itemFeedList)
-
                 //adpter view
                 uiThread {
-                    recycleView.layoutManager = LinearLayoutManager(this@MainActivity)
+
                     recycleView.adapter = FeedAdapter(itemFeedList, this@MainActivity)
                     //recycleView.addItemDecoration(DividerItemDecoration(this, LinearLayoutManager.VERTICAL))
 
@@ -36,6 +37,7 @@ class MainActivity : AppCompatActivity() {
             }
             catch (e: Throwable) {
                 Log.w("ERRO ADAPTER OR LINK", e.message.toString())
+                recycleView.adapter = FeedAdapter(itemFeedList, this@MainActivity)
             }
         }
     }
