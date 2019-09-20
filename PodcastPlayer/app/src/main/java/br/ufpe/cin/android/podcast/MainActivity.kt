@@ -22,7 +22,11 @@ class MainActivity : AppCompatActivity() {
                 //pegando o feed da url e jogando no parser
                 var feed = URL("https://s3-us-west-1.amazonaws.com/podcasts.thepolyglotdeveloper.com/podcast.xml").readText()
                 var itemFeedList = Parser.parse(feed)
-                //
+
+                //db
+                val db = ItemFeedDB.getDatabase(applicationContext).ItemFeedDAO().inserirFeed(itemFeedList)
+
+                //adpter view
                 uiThread {
                     recycleView.layoutManager = LinearLayoutManager(this@MainActivity)
                     recycleView.adapter = FeedAdapter(itemFeedList, this@MainActivity)
